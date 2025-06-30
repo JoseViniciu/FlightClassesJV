@@ -96,23 +96,32 @@
 
   <script>
     const titleText = document.getElementById('main-title-text');
-    const plane = document.getElementById('flying-plane');
+const plane = document.getElementById('flying-plane');
 
-    function flyArc() {
-      const rect = titleText.getBoundingClientRect();
-      const startX = -120;
-      const endX = window.innerWidth;
-      const centerY = rect.top + rect.height / 2;
-      const arcHeight = -80;
+let isAnimating = false;
+let lastAnimationEnd = 0;
 
-      let startTime = null;
-      const duration = 3000;
+function flyArc() {
+    const now = Date.now();
+    if (isAnimating || now - lastAnimationEnd < 3000) {
+        return; // Prevent restart or cooldown not finished
+    }
+    isAnimating = true;
 
-      function customEase(normalizedTime) {
+    const rect = titleText.getBoundingClientRect();
+    const startX = -120;
+    const endX = window.innerWidth;
+    const centerY = rect.top + rect.height / 2;
+    const arcHeight = -80;
+
+    let startTime = null;
+    const duration = 3000;
+
+    function customEase(normalizedTime) {
         return 0.5 - 0.5 * Math.cos(Math.PI * normalizedTime);
-      }
+    }
 
-      function animatePlane(timestamp) {
+    function animatePlane(timestamp) {
         if (!startTime) startTime = timestamp;
         const elapsed = timestamp - startTime;
         const normalizedTime = Math.min(elapsed / duration, 1);
@@ -130,21 +139,23 @@
         plane.style.opacity = 1;
         plane.style.transform = `rotate(${angle}rad)`;
 
-        if (t < 1) {
-          requestAnimationFrame(animatePlane);
+        if (normalizedTime < 1) {
+            requestAnimationFrame(animatePlane);
         } else {
-          plane.style.opacity = 0.7;
+            plane.style.opacity = 0.7;
+            isAnimating = false;
+            lastAnimationEnd = Date.now();
         }
-      }
-
-      plane.style.left = `${startX}px`;
-      plane.style.top = `${centerY}px`;
-      plane.style.opacity = 1;
-
-      requestAnimationFrame(animatePlane);
     }
 
-    titleText.addEventListener('mouseenter', flyArc);
+    plane.style.left = `${startX}px`;
+    plane.style.top = `${centerY}px`;
+    plane.style.opacity = 1;
+
+    requestAnimationFrame(animatePlane);
+}
+
+titleText.addEventListener('mouseenter', flyArc);
     plane.addEventListener('animationend', () => {
       plane.classList.remove('animate');
     });
