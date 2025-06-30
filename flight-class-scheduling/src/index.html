@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Schedule Your Flight Class</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:700&family=Open+Sans:400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main>
+    <header>
+      <h1 id="main-title">
+        <span id="main-title-text">Schedule Your Flight Class</span>
+      </h1>
+      <img 
+        src="https://banner2.cleanpng.com/20190417/org/kisspng-airplane-logo-portable-network-graphics-image-comp-5cb6fe0335d040.5157108815554964512204.jpg"
+        alt="Illustration of a plane flying across the screen" 
+        class="plane-fly" 
+        id="flying-plane" />
+    </header>
+
+    <section id="who-are-we" class="section">
+      <h2 class="section-title">Who Are We?</h2>
+      <p>
+        We are SkyWings Flight Academy, dedicated to providing safe, fun, and professional flight training for aspiring pilots of all levels.
+      </p>
+    </section>
+
+    <section id="planes" class="section">
+      <h2 class="section-title">Our Planes</h2>
+
+      <div class="plane">
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Cessna_172S_Skyhawk_SP%2C_Private_JP6817606.jpg/500px-Cessna_172S_Skyhawk_SP%2C_Private_JP6817606.jpg" 
+          alt="Cessna 172 aircraft on the ground"
+          class="plane-img cessna-expand" />
+        <div>
+          <span class="plane-name">Cessna 172</span>
+          <p>
+            The Cessna 172 is a four-seat, single-engine, high-wing airplane, renowned for its reliability and ease of handling. It's perfect for both beginners and experienced pilots.
+          </p>
+        </div>
+      </div>
+
+      <div class="plane">
+        <img 
+          src="https://upload.wikimedia.org/wikipedia/commons/1/17/G-AVRZ_Piper_PA-28-180_Cherokee_C_at_Northrepps.jpg" 
+          alt="Piper PA-28 aircraft at an airfield"
+          class="plane-img piper-expand" />
+        <div>
+          <span class="plane-name">Piper PA-28</span>
+          <p>
+            The Piper PA-28 is a family of light aircraft built for flight training and personal use. Its low-wing design and comfortable cabin make it a favorite among students.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pilot-teacher" class="section">
+      <h2 class="section-title">Your Pilot Teacher</h2>
+      <p>
+        Captain John Carter is a certified flight instructor with over 5,000 flight hours and a passion for teaching. His patient and thorough approach ensures every student feels confident and prepared.
+      </p>
+    </section>
+
+    <section id="schedule-class" class="section">
+      <h2 class="section-title">Schedule Your Class</h2>
+      <form>
+        <div class="form-group">
+          <label for="name">Your Name:</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="plane">Choose Plane:</label>
+          <select id="plane" name="plane">
+            <option value="cessna172">Cessna 172</option>
+            <option value="piperpa28">Piper PA-28</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Preferred Date:</label>
+          <input type="date" id="date" name="date" required />
+        </div>
+
+        <button type="submit">Schedule Class</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const titleText = document.getElementById('main-title-text');
+    const plane = document.getElementById('flying-plane');
+
+    function flyArc() {
+      const rect = titleText.getBoundingClientRect();
+      const startX = -120;
+      const endX = window.innerWidth;
+      const centerY = rect.top + rect.height / 2;
+      const arcHeight = -80;
+
+      let startTime = null;
+      const duration = 3000;
+
+      function customEase(normalizedTime) {
+        return 0.5 - 0.5 * Math.cos(Math.PI * normalizedTime);
+      }
+
+      function animatePlane(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const normalizedTime = Math.min(elapsed / duration, 1);
+        const t = customEase(normalizedTime);
+
+        const x = startX + (endX - startX) * t;
+        const y = centerY + arcHeight * Math.sin(Math.PI * t);
+
+        const dx = (endX - startX) * 0.01;
+        const dy = arcHeight * Math.PI * Math.cos(Math.PI * t) * 0.01;
+        const angle = Math.atan2(dy, dx);
+
+        plane.style.left = `${x}px`;
+        plane.style.top = `${y}px`;
+        plane.style.opacity = 1;
+        plane.style.transform = `rotate(${angle}rad)`;
+
+        if (t < 1) {
+          requestAnimationFrame(animatePlane);
+        } else {
+          plane.style.opacity = 0.7;
+        }
+      }
+
+      plane.style.left = `${startX}px`;
+      plane.style.top = `${centerY}px`;
+      plane.style.opacity = 1;
+
+      requestAnimationFrame(animatePlane);
+    }
+
+    titleText.addEventListener('mouseenter', flyArc);
+    plane.addEventListener('animationend', () => {
+      plane.classList.remove('animate');
+    });
+  </script>
+</body>
+</html>
