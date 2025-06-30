@@ -99,8 +99,7 @@ form {
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
+  width: 100%;
 }
 
 label {
@@ -109,12 +108,14 @@ label {
 }
 
 input, select {
+  box-sizing: border-box;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
   font-family: 'Open Sans', sans-serif;
   width: 100%;
+  background: white;
 }
 
 /* Button */
@@ -135,6 +136,11 @@ button:hover {
   background: linear-gradient(to right, #005fa3, #004080);
 }
 
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
 /* Plane flying animation */
 .plane-fly {
   position: fixed;
